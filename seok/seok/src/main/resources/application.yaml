@@ -1,3 +1,22 @@
 spring:
   application:
     name: seok
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 외부로 노출할 액츄에이터 엔드포인트를 지정
+        # 프로메테우스용 수집 경로와 애플리케이션 상태 체크 경로를 염
+        include: "health, prometheus"
+  endpoint:
+    health:
+      # health 체크 시 상세한 상태 정보(디스크, DB 연결 등)를 보여줌
+      show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
