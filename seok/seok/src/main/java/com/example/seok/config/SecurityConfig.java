@@ -23,6 +23,7 @@ public class SecurityConfig {
                         // (나중에 프로메테우스가 긁어갈 수 있도록)
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         // 3. 그 외의 모든 일반 API 요청은 인증(로그인)을 받도록 설정
                         .anyRequest().authenticated()
                 );
