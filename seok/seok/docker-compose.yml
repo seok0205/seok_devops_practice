@@ -23,7 +23,7 @@ services:
       "--collation-server=utf8mb4_unicode_ci"
     ]
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
@@ -36,7 +36,7 @@ services:
 
     # [추천] DB가 완전히 살아났는지 확인하는 데브옵스용 체크 레이어
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -58,7 +58,7 @@ services:
       "--bind", "0.0.0.0",
       "--appendonly", "yes",
       "--save", "60", "1000",
-      "--databases", "${REDIS_DB}", # .env에서 따옴표 없는 숫자(예: 16)로 치환
+      "--databases", "${REDIS_DB_CNT}", # .env에서 따옴표 없는 숫자(예: 16)로 치환
       "--maxmemory", "128mb",
       "--maxmemory-policy", "volatile-lru",
       "--requirepass", "${REDIS_PASSWORD}"
@@ -83,6 +83,4 @@ networks:
 
 volumes:
   redis_data:
-    external: true
   mysql_data:
-    external: true
