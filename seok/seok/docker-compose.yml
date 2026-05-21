@@ -1,0 +1,88 @@
+services:
+  seok-back:
+    container_name: seok_back
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ".env"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    command: [
+      "--max-connections=200",
+      "--innodb-buffer-pool-size=256M",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci"
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    mem_limit: 512m
+    # swap_limit을 1g로 늘려 메모리가 순간적으로 튀어도 컨테이너 급사 방지
+    memswap_limit: 1g
+    cpus: "0.2"
+
+    # [추천] DB가 완전히 살아났는지 확인하는 데브옵스용 체크 레이어
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - seok_net
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    # 레디스는 환경변수가 아니라 command 명령어 텍스트 배열을 통해 패스워드와 설정을 정밀 주입
+    # 문자열 꼬임 방지, 단일 라인 배열 작성이 안전
+    command: [
+      "redis-server",
+      "--bind", "0.0.0.0",
+      "--appendonly", "yes",
+      "--save", "60", "1000",
+      "--databases", "${REDIS_DB}", # .env에서 따옴표 없는 숫자(예: 16)로 치환
+      "--maxmemory", "128mb",
+      "--maxmemory-policy", "volatile-lru",
+      "--requirepass", "${REDIS_PASSWORD}"
+    ]
+    volumes:
+      - redis_data:/data
+    mem_limit: 256m
+    memswap_limit: 384m
+    cpus: "0.25"
+    healthcheck:
+      # alpine 이미지의 순수 sh 환경에서도 에러 없이 헬스체크가 돌도록 간소화된 패스워드 연동 핑 사용
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep -q PONG" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - seok_net
+
+networks:
+  seok_net:
+    external: true
+
+volumes:
+  redis_data:
+    external: true
+  mysql_data:
+    external: true
