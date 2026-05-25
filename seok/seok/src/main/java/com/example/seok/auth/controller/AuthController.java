@@ -2,6 +2,7 @@ package com.example.seok.auth.controller;
 
 import com.example.seok.auth.dto.AuthDto.*;
 import com.example.seok.auth.service.AuthService;
+import com.example.seok.auth.service.EmailVerificationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,8 @@ import jakarta.validation.Valid;
 @Tag(name = "인증 API", description = "MySQL 및 Redis 연동 회원가입/로그인")
 public class AuthController {
 
-    private final AuthService authService; // 하나의 서비스만 주입
+    private final AuthService authService;
+    private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
@@ -25,6 +27,13 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/signup-mail")
+    public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody EmailRequest request) {
+        // AuthService를 거치지 않고 직접 호출하여 DB 트랜잭션 락 유발 가능성을 원천 차단
+        emailVerificationService.sendVerificationCode(request.getEmail());
+        return ResponseEntity.ok("인증번호가 발송되었습니다. 3분 이내에 확인해주세요.");
     }
 
     @PostMapping("/login")

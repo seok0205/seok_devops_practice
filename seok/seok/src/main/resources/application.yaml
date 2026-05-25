@@ -20,11 +20,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     database: mysql
     hibernate:
-      # 로컬 실습 환경이므로 스프링이 켜질 때 Entity 클래스를 읽어 테이블을 자동으로 만들거나 수정하도록 설정
       ddl-auto: update
     properties:
       hibernate:
-        # 콘솔창에 JPA가 날리는 SQL 쿼리문을 이쁘게 출력해주는 데브옵스 디버깅용 옵션
         show_sql: true
         format_sql: true
         use_sql_comments: true
@@ -32,17 +30,12 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: ${NAVER_ID:-9526yu@naver.com}
-    password: ${NAVER_PASSWORD:-D23G3X4Q88Q8}
+    username: ${NAVER_ID}
+    password: ${NAVER_PASSWORD}
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          ssl:
-            enable: true
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
 
 management:
   endpoints:
