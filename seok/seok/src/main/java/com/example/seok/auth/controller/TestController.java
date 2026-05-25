@@ -1,4 +1,4 @@
-package com.example.seok.controller;
+package com.example.seok.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

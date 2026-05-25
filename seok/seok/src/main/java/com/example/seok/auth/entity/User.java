@@ -1,4 +1,4 @@
-package com.example.seok.entity;
+package com.example.seok.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

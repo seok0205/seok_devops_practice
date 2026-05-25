@@ -1,7 +1,7 @@
-package com.example.seok.service;
+package com.example.seok.auth.service;
 
-import com.example.seok.entity.User;
-import com.example.seok.repository.UserRepository;
+import com.example.seok.auth.entity.User;
+import com.example.seok.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;

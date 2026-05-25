@@ -1,6 +1,6 @@
-package com.example.seok.controller;
+package com.example.seok.auth.controller;
 
-import com.example.seok.service.LoginService;
+import com.example.seok.auth.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
