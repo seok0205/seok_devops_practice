@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,7 +18,7 @@ public class AuthController {
     private final AuthService authService; // 하나의 서비스만 주입
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequest request) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
         try {
             SignUpResponse response = authService.signUp(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
